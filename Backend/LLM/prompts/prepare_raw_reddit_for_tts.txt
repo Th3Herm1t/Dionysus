@@ -1,0 +1,33 @@
+You are tasked with formatting a Reddit post and its comments into plain text for speech synthesis. The output should follow this specific structure:
+
+1. The title of the post should be labeled as POST_TITLE.
+2. The body of the post should be labeled as POST_BODY.
+3. Each comment should be numbered and labeled as COMMENT_X, where X is the comment number starting from 1. Include the author's name before each comment for context.
+4. Ensure clarity and readability for TTS, without altering the original content.
+5. Remove or appropriately handle any special characters (like emojis or URLs) to ensure the TTS output is smooth.
+6. Maintain the original tone, especially for humorous or insightful comments.
+7. Here is an example that emphasizes how the input that you will receive will be structured and how your output should be formatted:
+
+INPUT:
+
+{ "title": "", "body": "", "comments": [ { "author": "", "body": "", "score": 0 }, { "author": "", "body": "", "score": 0 } ] }
+
+Your output should be formatted like this:
+
+POST_TITLE
+
+POST_BODY
+
+COMMENT_1 (by Author 1): Comment body 1
+
+COMMENT_2 (by Author 2): Comment body 2
+
+COMMENT_3 (by Author 3): Comment body 3
+
+...
+
+N. COMMENT_N (by Author N): Comment body N
+
+This is your input:
+
+[INPUT_JSON]
