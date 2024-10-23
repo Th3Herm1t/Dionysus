@@ -1,0 +1,74 @@
+# Windows-specific files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Python-related
+*.py[cod]
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+*.sqlite3
+*.db
+*data/
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+venv/
+
+# macOS specific (just in case you share with Mac users)
+*.DS_Store
+*.AppleDouble
+.Trashes
+
+# FastAPI/Uvicorn files (if applicable)
+*.pid
+
+# Log files
+*.log
+*.out
+*.err
+
+# Environment variables
+.env
+.env.*.local
+secrets/
+
+# FFmpeg generated media files
+*.mp4
+*.wav
+*.mov
+*.mkv
+*.avi
+*.flv
+*.webm
+*.srt
+
+# Backend (data ingestion specific, if any)
+Backend/data_ingestion/*.tmp
+
+# Frontend (React-related, if applicable)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# Editor settings
+.vscode/
+.idea/
+
+# Miscellaneous
+*.lock
+coverage/
+.cache/
+tmp/
