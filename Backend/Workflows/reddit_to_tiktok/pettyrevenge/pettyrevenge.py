@@ -63,7 +63,7 @@ def filter_posts_via_llm(posts, prompt_path=r'Backend\LLM\prompts\reddit_post_se
 
 def create_folder_structure_for_posts(posts):
     today_date = datetime.now().strftime('%Y-%m-%d')
-    base_dir = os.path.join('Backend', 'Workflows', 'data', 'Reddit to TikTok', today_date)
+    base_dir = os.path.join("Backend", "Workflows", "reddit_to_tiktok", "pettyrevenge", today_date)
     folder_paths = {}
 
     for post in posts:
@@ -166,60 +166,57 @@ def create_screenshots_for_selected_posts(posts, folder_paths):
     return screenshot_paths
 
 if __name__ == "__main__":
-    while True:
-        logger.info("Starting Reddit to TikTok Workflow...")
 
-        # Step 1: Fetch Reddit posts (max 100)
-        posts = fetch_reddit_posts(subreddit_name='AskReddit', limit=100)
-        logger.info(f"Fetched {len(posts)} posts from subreddit: LifeProTips")
+    logger.info("Starting Reddit to TikTok Workflow...")
 
-        # Step 2: Filter posts via LLM using the specified prompt template
-        logger.info("Building Reddit post info for LLM prompt...")
-        selected_posts = filter_posts_via_llm(posts)
-        logger.info(f"Selected posts: {selected_posts}")
+    subreddit_name='pettyrevenge'
+    # Step 1: Fetch Reddit posts (max 100)
+    posts = fetch_reddit_posts(subreddit_name=subreddit_name, limit=100)
+    logger.info(f"Fetched {len(posts)} posts from subreddit: {subreddit_name}")
 
-        # Step 3: Create folder structure for the selected posts
-        folder_paths = create_folder_structure_for_posts(selected_posts)
+    # Step 2: Filter posts via LLM using the specified prompt template
+    logger.info("Building Reddit post info for LLM prompt...")
+    selected_posts = filter_posts_via_llm(posts)
+    logger.info(f"Selected posts: {selected_posts}")
 
-        # Step 4: Prepare each post and its comments for TTS and save it in the corresponding folder
-        logger.info("Preparing posts for TTS...")
-        for post in selected_posts:
-            post_id = post['id']
-            folder_path = folder_paths[post_id]
-            prepare_reddit_for_tts_via_llm(post, folder_path)
+    # Step 3: Create folder structure for the selected posts
+    folder_paths = create_folder_structure_for_posts(selected_posts)
+
+    # Step 4: Prepare each post and its comments for TTS and save it in the corresponding folder
+    logger.info("Preparing posts for TTS...")
+    for post in selected_posts:
+        post_id = post['id']
+        folder_path = folder_paths[post_id]
+        prepare_reddit_for_tts_via_llm(post, folder_path)
         
-        # Step 5: Generate narrations for the selected posts using TTS
-        logger.info("Generating narrations for selected posts...")
-        asyncio.run(generate_narrations_for_posts(selected_posts, folder_paths))
+    # Step 5: Generate narrations for the selected posts using TTS
+    logger.info("Generating narrations for selected posts...")
+    asyncio.run(generate_narrations_for_posts(selected_posts, folder_paths))
 
-        # Step 6: Create screenshots for the selected posts
-        logger.info("Creating screenshots for selected posts...")
-        screenshot_paths = create_screenshots_for_selected_posts(selected_posts, folder_paths)
-        logger.info(f"Screenshots saved: {screenshot_paths}")
+    # Step 6: Create screenshots for the selected posts
+    logger.info("Creating screenshots for selected posts...")
+    screenshot_paths = create_screenshots_for_selected_posts(selected_posts, folder_paths)
+    logger.info(f"Screenshots saved: {screenshot_paths}")
 
-        # Step 7: Create TikTok videos using the VideoAgent
-        video_agent = VideoAgent(output_dir="tiktok_videos")  # Create an instance of VideoAgent
-        for post in selected_posts:
-            post_id = post['id']
-            folder_path = folder_paths[post_id]
-            screenshot_path = os.path.join(folder_path, f"post_{post_id}.png")
-            audio_path = os.path.join(folder_path, 'narration.mp3')
-            vtt_path = os.path.join(folder_path, 'narration.vtt')
-            output_filename = f"tiktok_{post_id}.mp4"
+    # Step 7: Create TikTok videos using the VideoAgent
+    video_agent = VideoAgent(output_dir="tiktok_videos")  # Create an instance of VideoAgent
+    for post in selected_posts:
+        post_id = post['id']
+        folder_path = folder_paths[post_id]
+        screenshot_path = os.path.join(folder_path, f"post_{post_id}.png")
+        audio_path = os.path.join(folder_path, 'narration.mp3')
+        vtt_path = os.path.join(folder_path, 'narration.vtt')
+        output_filename = f"tiktok_{post_id}.mp4"
 
-            # Pass the title of the Reddit post to the video creation function
-            video_path = video_agent.create_tiktok_video(
-                screenshot_path, 
-                audio_path, 
-                vtt_path, 
-                output_filename,
-                title_text=post['title']  # Pass the post title here
-            )
-            if video_path:
-                logger.info(f"TikTok video created at: {video_path}")
-            else:
-                logger.error(f"Failed to create TikTok video for post {post_id}")
-
-        # Step 7: Wait before the next run
-        logger.info("Workflow completed. Waiting for next run.")
-        time.sleep(86400)  # Wait 24 hours before the next run
+        # Pass the title of the Reddit post to the video creation function
+        video_path = video_agent.create_tiktok_video(
+            screenshot_path, 
+            audio_path, 
+            vtt_path, 
+            output_filename,
+            title_text=post['title']  # Pass the post title here
+        )
+        if video_path:
+            logger.info(f"TikTok video created at: {video_path}")
+        else:
+            logger.error(f"Failed to create TikTok video for post {post_id}")
